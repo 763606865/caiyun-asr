@@ -11,7 +11,7 @@ use Caiyun\Asr\Tests\Doubles\FakeHttpClient;
 use Caiyun\Asr\Tests\Doubles\FakeWebSocketClient;
 use PHPUnit\Framework\TestCase;
 
-final class XunfeiDriverTest extends TestCase
+class XunfeiDriverTest extends TestCase
 {
     public function test_strips_wav_and_parses_dynamic_correction(): void
     {

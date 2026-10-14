@@ -4,13 +4,19 @@ declare(strict_types=1);
 
 namespace Caiyun\Asr\Support;
 
-final class Wav
+/**
+ * 读取 WAV 容器。讯飞 raw 编码只接受其中的 PCM 数据。
+ */
+class Wav
 {
     public static function isWav(string $contents): bool
     {
         return str_starts_with($contents, 'RIFF') && substr($contents, 8, 4) === 'WAVE';
     }
 
+    /**
+     * 取出 data 块。不是 WAV 时原样返回。
+     */
     public static function pcm(string $contents): string
     {
         $chunk = self::chunk($contents, 'data');
@@ -18,6 +24,9 @@ final class Wav
         return $chunk ?? $contents;
     }
 
+    /**
+     * 从 fmt 块读取采样率。无法识别时返回 null。
+     */
     public static function sampleRate(string $contents): ?int
     {
         $chunk = self::chunk($contents, 'fmt ');

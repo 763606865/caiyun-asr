@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace Caiyun\Asr\Http;
 
-final class WebSocketFrame
+/**
+ * RFC 6455 数据帧。缓冲区还不够一帧时，tryDecode() 返回 null。
+ */
+class WebSocketFrame
 {
     /**
+     * 尝试从缓冲区解出一帧。
+     *
      * @return array{fin: bool, opcode: int, payload: string, consumed: int}|null
      */
     public static function tryDecode(string $buffer): ?array
@@ -63,6 +68,9 @@ final class WebSocketFrame
         ];
     }
 
+    /**
+     * 编码一帧。客户端发往服务端的帧需要掩码，传入 $mask 可固定掩码以便测试。
+     */
     public static function encode(string $payload, int $opcode = 0x1, bool $fin = true, bool $masked = true, ?string $mask = null): string
     {
         $header = chr(($fin ? 0x80 : 0x00) | ($opcode & 0x0F));

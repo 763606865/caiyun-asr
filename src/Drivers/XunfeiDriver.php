@@ -13,7 +13,10 @@ use Caiyun\Asr\Support\Json;
 use Caiyun\Asr\Support\Wav;
 use Caiyun\Asr\Support\XunfeiSigner;
 
-final class XunfeiDriver extends AbstractDriver
+/**
+ * 讯飞语音听写（流式版）。wav 会去掉文件头，再按帧通过 WebSocket 上传。
+ */
+class XunfeiDriver extends AbstractDriver
 {
     public function __construct(
         string $name,

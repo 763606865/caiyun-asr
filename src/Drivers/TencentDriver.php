@@ -10,7 +10,10 @@ use Caiyun\Asr\RecognitionResult;
 use Caiyun\Asr\Support\Json;
 use Caiyun\Asr\Support\TencentSigner;
 
-final class TencentDriver extends AbstractDriver
+/**
+ * 腾讯云一句话识别。使用 TC3-HMAC-SHA256 签名，支持本地音频和公网 URL。
+ */
+class TencentDriver extends AbstractDriver
 {
     private const HOST = 'asr.tencentcloudapi.com';
 

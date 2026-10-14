@@ -1,8 +1,6 @@
 # caiyun/asr
 
-彩云语音识别，用同一套调用方式接腾讯云、科大讯飞、阿里云的一句话识别。
-
-三家都处理 60 秒以内的短音频：
+彩云语音识别。用同一套调用方式接腾讯云、科大讯飞、阿里云的一句话识别，三家都处理 60 秒以内的短音频。
 
 | 驱动 | 服务 | 协议 |
 | --- | --- | --- |
@@ -12,26 +10,21 @@
 
 ## 安装
 
-```bash
-composer require caiyun/asr
-```
-
 需要 PHP 8.3+、Laravel 11+，以及 `curl`、`json`、`openssl` 扩展。
 
-## 配置
-
-安装后把配置发布到业务项目的 `config/asr.php`：
-
 ```bash
+composer require caiyun/asr
 php artisan vendor:publish --provider="Caiyun\Asr\AsrServiceProvider" --tag=asr-config
 ```
 
-未发布时也会加载包内的默认配置。发布命令默认保留已经存在的 `config/asr.php`；需要覆盖时加上 `--force`。
+Laravel 会自动注册服务提供者和 `Asr` 门面。配置会发布到业务项目的 `config/asr.php`。未发布时使用包内的默认配置；项目里已经有这个文件时，发布命令会保留原文件，需要覆盖再加 `--force`。
 
-凭证放在环境变量里，例如：
+## 配置
 
 ```dotenv
 ASR_DRIVER=tencent
+ASR_TIMEOUT=60
+
 ASR_TENCENT_SECRET_ID=
 ASR_TENCENT_SECRET_KEY=
 ASR_TENCENT_ENGINE=16k_zh
@@ -46,25 +39,30 @@ ASR_ALIYUN_APP_KEY=
 ASR_ALIYUN_REGION=cn-shanghai
 ```
 
-Laravel 里可以直接解析：
+`ASR_DRIVER` 取 `tencent`、`xunfei` 或 `aliyun`。8k 音频把腾讯云引擎改成 `8k_zh`。阿里云地域还可以是 `cn-beijing`、`cn-shenzhen`；如果已经有 NLS Token，配置里写 `ASR_ALIYUN_TOKEN`，不必再填 AccessKey。改完配置后如果开了配置缓存，执行 `php artisan config:cache`。
+
+## 使用
 
 ```php
-$asr = app(\Caiyun\Asr\Asr::class);
+use Caiyun\Asr\Facades\Asr;
+
+$result = Asr::recognize('/path/to/audio.wav');
+
+echo $result->text();
+$result->driver();
+$result->requestId();
+$result->raw();
 ```
 
-不使用 Laravel 时，把同样的数组传给构造函数。只配置一个驱动时可以不写 `default`。阿里云如果手里已经有 NLS Token，写 `token` 即可，不必再配 AccessKey。
-
-## 调用
+本地路径直接传字符串。公网地址用 `Audio::url()`，上传得到的二进制用 `Audio::contents()`。字符串以 `http://` 或 `https://` 开头时也会按公网地址处理。
 
 ```php
 use Caiyun\Asr\Audio;
+use Caiyun\Asr\Facades\Asr;
 
-$result = $asr->recognize('/path/to/audio.wav');
-echo $result->text();
+Asr::driver('aliyun')->recognize(Audio::url('https://example.com/a.wav'));
 
-$result = $asr->driver('aliyun')->recognize(Audio::url('https://example.com/a.wav'));
-
-$result = $asr->recognize(Audio::contents($binary, [
+Asr::recognize(Audio::contents($binary, [
     'format' => 'pcm',
     'sample_rate' => 16000,
 ]), [
@@ -72,28 +70,19 @@ $result = $asr->recognize(Audio::contents($binary, [
 ]);
 ```
 
-`recognize()` 的返回值包含识别文本、驱动名、厂商请求号和原始响应：
+`driver()` 切换已配置的服务商。当次调用也可以在第二个参数里写 `'driver' => 'aliyun'`，这次调用结束后默认驱动不变。
 
-```php
-$result->text();
-$result->driver();
-$result->requestId();
-$result->raw();
-```
+wav 没有传 `sample_rate` 时，会从文件头读取采样率。
 
-字符串参数以 `http://` 或 `https://` 开头时按音频地址处理，否则按本地文件路径处理。
-
-## 音频
+## 音频要求
 
 - 腾讯云支持本地内容或公网 URL，格式包括 wav、pcm、mp3、m4a、aac、amr 等，文件不超过 3MB。
 - 阿里云上传原始音频字节。采样率用 8000 或 16000，单声道 16bit。公网地址通过 `audio_address` 提交。
-- 讯飞流式接口接收 pcm。wav 会去掉文件头再上传；mp3 按 `lame` 编码上传。默认每 40ms 发送 1280 字节，和官方建议一致，所以识别耗时接近音频时长。本地调试可以把 `frame_interval` 设为 `0`。
-
-wav 未指定 `sample_rate` 时，会从头里读取采样率。
+- 讯飞接收 pcm。wav 会去掉文件头再上传，mp3 按 `lame` 编码上传。默认每 40ms 发送 1280 字节，识别耗时接近音频时长。本地调试可以把 `frame_interval` 设为 `0`。
 
 ## 可选参数
 
-调用时的 `$options` 会覆盖驱动配置里的同名项。
+调用时的 `$options` 会覆盖 `config/asr.php` 里的同名项。
 
 腾讯云：`engine`、`region`、`filter_dirty`、`filter_modal`、`filter_punc`、`convert_num_mode`、`word_info`。
 
@@ -103,8 +92,29 @@ wav 未指定 `sample_rate` 时，会从头里读取采样率。
 
 通用：`format`、`sample_rate`、`driver`。
 
+## 不使用 Laravel
+
+把同一份配置数组交给 `Caiyun\Asr\Asr`。只配置一个驱动时可以不写 `default`。
+
+```php
+$asr = new \Caiyun\Asr\Asr([
+    'default' => 'tencent',
+    'timeout' => 60,
+    'drivers' => [
+        'tencent' => [
+            'secret_id' => 'your-secret-id',
+            'secret_key' => 'your-secret-key',
+            'engine' => '16k_zh',
+        ],
+    ],
+]);
+
+$asr->recognize('/path/to/audio.wav');
+```
+
 ## 测试
 
 ```bash
 composer test
+composer check
 ```

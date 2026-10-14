@@ -7,7 +7,10 @@ namespace Caiyun\Asr\Http;
 use Caiyun\Asr\Contracts\WebSocketClientInterface;
 use Caiyun\Asr\Exceptions\RequestException;
 
-final class StreamWebSocketClient implements WebSocketClientInterface
+/**
+ * 基于 PHP 流的 WebSocket 客户端，支持 ws 和 wss。讯飞握手会校验 Sec-WebSocket-Accept。
+ */
+class StreamWebSocketClient implements WebSocketClientInterface
 {
     private const ACCEPT_GUID = '258EAFA5-E914-47DA-95CA-C5AB0DC85B11';
 

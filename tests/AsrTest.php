@@ -11,7 +11,7 @@ use Caiyun\Asr\Tests\Doubles\FakeHttpClient;
 use Caiyun\Asr\Tests\Doubles\FakeWebSocketClient;
 use PHPUnit\Framework\TestCase;
 
-final class AsrTest extends TestCase
+class AsrTest extends TestCase
 {
     public function test_uses_default_driver_and_can_switch(): void
     {

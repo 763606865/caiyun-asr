@@ -11,7 +11,7 @@ use Caiyun\Asr\Exceptions\RequestException;
 use Caiyun\Asr\Tests\Doubles\FakeHttpClient;
 use PHPUnit\Framework\TestCase;
 
-final class AliyunDriverTest extends TestCase
+class AliyunDriverTest extends TestCase
 {
     public function test_recognize_with_given_token(): void
     {

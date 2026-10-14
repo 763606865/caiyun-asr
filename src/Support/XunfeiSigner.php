@@ -4,8 +4,14 @@ declare(strict_types=1);
 
 namespace Caiyun\Asr\Support;
 
-final class XunfeiSigner
+/**
+ * 讯飞 WebSocket 握手签名。date 使用 GMT，与服务器相差超过 5 分钟会被拒绝。
+ */
+class XunfeiSigner
 {
+    /**
+     * 拼出带 authorization、date、host 的 wss 地址。
+     */
     public function url(
         string $apiKey,
         string $apiSecret,
@@ -25,6 +31,9 @@ final class XunfeiSigner
         return 'wss://'.$host.$path.'?'.$query;
     }
 
+    /**
+     * 计算 authorization 参数。返回值是签名原文的 Base64，还不是完整 URL。
+     */
     public function authorization(
         string $apiKey,
         string $apiSecret,

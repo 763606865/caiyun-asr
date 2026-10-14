@@ -7,7 +7,7 @@ namespace Caiyun\Asr\Tests;
 use Caiyun\Asr\Support\TencentSigner;
 use PHPUnit\Framework\TestCase;
 
-final class TencentSignerTest extends TestCase
+class TencentSignerTest extends TestCase
 {
     public function test_tc3_signature_vector(): void
     {

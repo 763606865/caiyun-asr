@@ -6,7 +6,7 @@ namespace Caiyun\Asr\Tests\Doubles;
 
 use Caiyun\Asr\Contracts\WebSocketClientInterface;
 
-final class FakeWebSocketClient implements WebSocketClientInterface
+class FakeWebSocketClient implements WebSocketClientInterface
 {
     /** @var list<array{url: string, messages: list<string>, timeout: int, intervalMs: int}> */
     public array $calls = [];

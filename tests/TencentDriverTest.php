@@ -10,7 +10,7 @@ use Caiyun\Asr\Exceptions\RequestException;
 use Caiyun\Asr\Tests\Doubles\FakeHttpClient;
 use PHPUnit\Framework\TestCase;
 
-final class TencentDriverTest extends TestCase
+class TencentDriverTest extends TestCase
 {
     public function test_recognize_local_audio(): void
     {

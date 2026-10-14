@@ -7,7 +7,10 @@ namespace Caiyun\Asr;
 use Caiyun\Asr\Exceptions\AsrException;
 use Caiyun\Asr\Support\Wav;
 
-final class Audio
+/**
+ * 待识别的音频，可以用本地文件、二进制内容或公网地址构造。
+ */
+class Audio
 {
     private function __construct(
         private readonly ?string $contents,
@@ -17,6 +20,8 @@ final class Audio
     ) {}
 
     /**
+     * 从本地文件读取。格式默认取扩展名。
+     *
      * @param  array<string, mixed>  $options  format、sample_rate
      */
     public static function file(string $path, array $options = []): self
@@ -34,6 +39,8 @@ final class Audio
     }
 
     /**
+     * 使用已在内存中的音频字节。未指定格式时按 wav 处理。
+     *
      * @param  array<string, mixed>  $options  format、sample_rate
      */
     public static function contents(string $binary, array $options = []): self
@@ -51,6 +58,8 @@ final class Audio
     }
 
     /**
+     * 使用公网可访问的音频地址。只接受 http 和 https。
+     *
      * @param  array<string, mixed>  $options  format、sample_rate
      */
     public static function url(string $url, array $options = []): self
@@ -65,6 +74,8 @@ final class Audio
     }
 
     /**
+     * 用本次调用的 format、sample_rate 覆盖已有值，其他键忽略。
+     *
      * @param  array<string, mixed>  $options
      */
     public function with(array $options): self
@@ -75,16 +86,23 @@ final class Audio
         return new self($this->contents, $this->url, self::normalizeFormat($format), $rate);
     }
 
+    /**
+     * 是否为公网地址。为 true 时没有本地字节，bytes() 会抛异常。
+     */
     public function isRemote(): bool
     {
         return $this->url !== null;
     }
 
+    /** 公网地址。本地音频返回 null。 */
     public function remoteUrl(): ?string
     {
         return $this->url;
     }
 
+    /**
+     * 本地音频字节，包含 wav 文件头。公网地址没有本地内容。
+     */
     public function bytes(): string
     {
         if ($this->contents === null) {
@@ -94,11 +112,15 @@ final class Audio
         return $this->contents;
     }
 
+    /** 小写格式名，例如 wav、pcm、mp3。wave 会规范成 wav。 */
     public function format(): string
     {
         return $this->format;
     }
 
+    /**
+     * 采样率。未指定时，wav 从头里读取，读不到则使用 16000。
+     */
     public function sampleRate(): int
     {
         if ($this->rate !== null) {

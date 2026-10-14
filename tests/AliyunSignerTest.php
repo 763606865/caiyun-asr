@@ -7,7 +7,7 @@ namespace Caiyun\Asr\Tests;
 use Caiyun\Asr\Support\AliyunSigner;
 use PHPUnit\Framework\TestCase;
 
-final class AliyunSignerTest extends TestCase
+class AliyunSignerTest extends TestCase
 {
     public function test_official_create_token_vector(): void
     {

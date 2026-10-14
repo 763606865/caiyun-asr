@@ -9,7 +9,7 @@ use Caiyun\Asr\Exceptions\AsrException;
 use Caiyun\Asr\Support\Wav;
 use PHPUnit\Framework\TestCase;
 
-final class AudioTest extends TestCase
+class AudioTest extends TestCase
 {
     public function test_wav_pcm_and_sample_rate(): void
     {

@@ -11,7 +11,10 @@ use Caiyun\Asr\RecognitionResult;
 use Caiyun\Asr\Support\AliyunSigner;
 use Caiyun\Asr\Support\Json;
 
-final class AliyunDriver extends AbstractDriver
+/**
+ * 阿里云一句话识别。未提供 token 时用 AccessKey 换取，并缓存到过期前 60 秒。
+ */
+class AliyunDriver extends AbstractDriver
 {
     private const GATEWAYS = [
         'cn-shanghai' => 'nls-gateway-cn-shanghai.aliyuncs.com',

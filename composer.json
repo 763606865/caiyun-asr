@@ -45,7 +45,10 @@
         "laravel": {
             "providers": [
                 "Caiyun\\Asr\\AsrServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "Asr": "Caiyun\\Asr\\Facades\\Asr"
+            }
         }
     }
 }

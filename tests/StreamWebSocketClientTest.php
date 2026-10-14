@@ -7,7 +7,7 @@ namespace Caiyun\Asr\Tests;
 use Caiyun\Asr\Http\StreamWebSocketClient;
 use PHPUnit\Framework\TestCase;
 
-final class StreamWebSocketClientTest extends TestCase
+class StreamWebSocketClientTest extends TestCase
 {
     public function test_exchange_with_local_server(): void
     {

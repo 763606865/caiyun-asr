@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Caiyun\Asr\Support;
 
-final class TencentSigner
+/**
+ * 腾讯云 API 3.0 签名。传入 timestamp 时结果可重复，便于对照测试向量。
+ */
+class TencentSigner
 {
     public function __construct(
         private readonly string $secretId,

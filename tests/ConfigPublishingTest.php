@@ -11,7 +11,7 @@ use Illuminate\Testing\PendingCommand;
 use LogicException;
 use Orchestra\Testbench\TestCase;
 
-final class ConfigPublishingTest extends TestCase
+class ConfigPublishingTest extends TestCase
 {
     private string $configDirectory;
 

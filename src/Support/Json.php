@@ -7,7 +7,10 @@ namespace Caiyun\Asr\Support;
 use Caiyun\Asr\Exceptions\RequestException;
 use JsonException;
 
-final class Json
+/**
+ * 请求和响应使用的 JSON。编码内容会参与腾讯云签名，因此不能转义斜杠和中文。
+ */
+class Json
 {
     public static function encode(mixed $value): string
     {

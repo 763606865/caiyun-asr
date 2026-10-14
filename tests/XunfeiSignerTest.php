@@ -7,7 +7,7 @@ namespace Caiyun\Asr\Tests;
 use Caiyun\Asr\Support\XunfeiSigner;
 use PHPUnit\Framework\TestCase;
 
-final class XunfeiSignerTest extends TestCase
+class XunfeiSignerTest extends TestCase
 {
     public function test_hmac_authorization(): void
     {

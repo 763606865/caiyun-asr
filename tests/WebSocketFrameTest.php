@@ -7,7 +7,7 @@ namespace Caiyun\Asr\Tests;
 use Caiyun\Asr\Http\WebSocketFrame;
 use PHPUnit\Framework\TestCase;
 
-final class WebSocketFrameTest extends TestCase
+class WebSocketFrameTest extends TestCase
 {
     public function test_round_trip_masked_text(): void
     {

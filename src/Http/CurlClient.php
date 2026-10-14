@@ -8,7 +8,10 @@ use Caiyun\Asr\Asr;
 use Caiyun\Asr\Contracts\HttpClientInterface;
 use Caiyun\Asr\Exceptions\RequestException;
 
-final class CurlClient implements HttpClientInterface
+/**
+ * 使用 cURL 发送请求，并拆开响应头和响应体。
+ */
+class CurlClient implements HttpClientInterface
 {
     public function request(string $method, string $url, array $headers = [], string $body = '', array $options = []): array
     {

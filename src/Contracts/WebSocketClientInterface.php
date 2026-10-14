@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Caiyun\Asr\Contracts;
 
+/**
+ * WebSocket 传输，目前供讯飞流式听写上传音频帧。
+ */
 interface WebSocketClientInterface
 {
     /**

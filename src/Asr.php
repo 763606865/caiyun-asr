@@ -14,21 +14,30 @@ use Caiyun\Asr\Exceptions\ConfigException;
 use Caiyun\Asr\Http\CurlClient;
 use Caiyun\Asr\Http\StreamWebSocketClient;
 
-final class Asr
+/**
+ * 语音识别入口。按配置选择腾讯云、讯飞或阿里云，识别 60 秒以内的短音频。
+ */
+class Asr
 {
+    /** 包版本，同时作为 HTTP User-Agent。 */
     public const VERSION = '0.1.0';
 
+    /** 腾讯云驱动名，对应配置键 drivers.tencent。 */
     public const TENCENT = 'tencent';
 
+    /** 讯飞驱动名，对应配置键 drivers.xunfei。 */
     public const XUNFEI = 'xunfei';
 
+    /** 阿里云驱动名，对应配置键 drivers.aliyun。 */
     public const ALIYUN = 'aliyun';
 
     /** @var array<string, DriverInterface> */
     private array $drivers = [];
 
     /**
-     * @param  array<string, mixed>  $config
+     * @param  array<string, mixed>  $config  default、timeout 和 drivers
+     * @param  HttpClientInterface|null  $http  不传则使用 cURL。测试可注入替身
+     * @param  WebSocketClientInterface|null  $websocket  讯飞使用。不传则使用流式客户端
      */
     public function __construct(
         private readonly array $config,
@@ -37,6 +46,11 @@ final class Asr
     ) {}
 
     /**
+     * 识别一段音频。
+     *
+     * 字符串以 http:// 或 https:// 开头时按公网地址处理，否则按本地文件路径处理。
+     * `$options['driver']` 可临时切换驱动，其余键会覆盖该驱动配置里的同名项。
+     *
      * @param  array<string, mixed>  $options
      */
     public function recognize(Audio|string $audio, array $options = []): RecognitionResult
@@ -47,6 +61,9 @@ final class Asr
         return $this->driver(is_string($driver) ? $driver : null)->recognize($audio, $options);
     }
 
+    /**
+     * 取得一个驱动实例。不传名称时使用 default；只配置了一个驱动时可以不写 default。
+     */
     public function driver(?string $name = null): DriverInterface
     {
         $name ??= $this->defaultDriver();

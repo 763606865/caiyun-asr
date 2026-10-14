@@ -7,7 +7,7 @@ namespace Caiyun\Asr\Tests\Doubles;
 use Caiyun\Asr\Contracts\HttpClientInterface;
 use RuntimeException;
 
-final class FakeHttpClient implements HttpClientInterface
+class FakeHttpClient implements HttpClientInterface
 {
     /** @var list<array{method: string, url: string, headers: array<string, string>, body: string}> */
     public array $calls = [];
